@@ -1,0 +1,27 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font: $body-weight $size-m $body-family;
+    color: $white;
+    line-height: $body-line-height;
+    background-color: $bg-color;
+}
+
+.container {
+	width: 600px;
+	margin: 0 auto;
+}
+
+.logo {
+	max-width: 120px;
+	margin: 0 auto;
+	margin-bottom: $margin-xl;
+
+	img {
+		width: 100%;
+	}
+}

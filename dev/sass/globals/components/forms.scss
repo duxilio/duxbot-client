@@ -1,0 +1,23 @@
+input[type="text"],
+input[type="search"] {
+	width: 100%;
+	max-width: 400px;
+
+	border: none;
+	background-color: transparent;
+
+	font: $body-weight $size-l $body-family;
+	color: $white;
+	@include border(bottom, $color: rgba($white, .4));
+
+	padding: 0;
+	padding-bottom: $margin-xs;
+
+	&::-webkit-input-placeholder {
+		color: $white;
+	}
+
+	&:focus {
+		outline: none;
+	}
+}
