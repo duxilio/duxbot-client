@@ -3,7 +3,13 @@
 
 @import "globals/document";
 @import "globals/globals";
+@import "globals/typography";
 
 @import "globals/components/forms";
+@import "globals/components/messages";
+@import "globals/components/cards";
+@import "globals/components/tags";
+@import "globals/components/buttons";
 
-@import "globals/partials/search-box";
+@import "globals/partials/input-box";
+@import "globals/partials/output-box";

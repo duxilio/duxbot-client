@@ -1,0 +1,21 @@
+.input-box {
+	width: 100%;
+
+	padding: $margin-m 0;
+
+	.logo {
+		width: 40px;
+		float: left;
+		margin-right: $margin-m;
+	}
+
+	//width: 600px;
+
+	// position: absolute;
+	// top: 50%;
+	// left: 50%;
+
+	// margin-left: -300px;
+	// margin-top: -#{(209/2) + 70}px;
+	// @extend .text-center;
+}

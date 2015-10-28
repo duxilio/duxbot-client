@@ -1,0 +1,25 @@
+.card {
+	width: 400px;
+	margin: 0 auto;
+
+	color: $base-color;
+	box-shadow: 5px 5px 0 $bg-color-dark;
+
+	overflow: hidden;
+	background-color: $white;
+	border-radius: $border-radius;
+
+	margin-bottom: $margin-l;
+
+	&__footer {
+		overflow: hidden;
+		font-size: $size-xs;
+		color: rgba($white, .9);
+		padding: $margin-m $margin-l;
+		background-color: $base-color;
+
+		.btn {
+			float: right;
+		}
+	}
+}

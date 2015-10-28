@@ -1,0 +1,10 @@
+table {
+	font-size: $size-s;
+	border-collapse: collapse;
+
+	td {
+		@include border(bottom, $color: $gray-light);
+		padding: $margin-m $margin-l;
+		vertical-align: top;
+	}
+}

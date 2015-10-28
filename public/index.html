@@ -10,14 +10,65 @@
   <body>
   	
     
-<div class="search-box">
-	
-	<div class="logo">
-		<img src="img/duxilio-logo-hexagon.svg" />
-	</div>
-	<input class="search-box__input" type="search" placeholder="How can I help?" />
+<section class="input-box">
+	<div class="container">
 
-</div>
+		<div class="logo">
+			<img src="img/duxilio-logo-hexagon.svg" />
+		</div>
+		<input class="input-box__input" type="search" placeholder="How can I help?" />
+	
+	</div>
+</section>
+
+<section class="output-box">
+	<div class="container">
+		
+		<div class="message">
+			Me and Matti have a meeting about software architecture with the guys from Microsoft tomorrow at 4
+		</div>
+		<div class="message message--right">
+			I am about to create the following meeting
+		</div>
+
+		<div class="card">
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><b>Software Architecture</b></td>
+				</tr>
+				<tr>
+					<td>Date</td>
+					<td>29th of October 2015 (tomorrow)</td>
+				</tr>
+				<tr>
+					<td>Time</td>
+					<td>4pm - 5pm</td>
+				</tr>
+				<tr>
+					<td>Participants</td>
+					<td>
+						<div class="tag">Koen</div>
+						<div class="tag">Matti</div>
+						<div class="tag">Dave (Microsoft)</div>
+						<div class="tag">George (Microsoft)</div>
+					</td>
+				</tr>
+			</table>
+			<footer class="card__footer">
+				<p>Type either y or n</p>
+			</footer>
+		</div>
+
+		<div class="message">
+			Yeah sure
+		</div>
+		<div class="message message--right">
+			Meeting created
+		</div>
+
+	</div>
+</section>
 
   <script src="js/app.js"></script>
 

@@ -1,13 +1,13 @@
 (function(){
 	
-	var searchBox = {
+	var inputBox = {
 
 		init: function(){
 			var els = this._els = {
-				wrapper: document.getElementsByClassName('search-box')[0],
+				wrapper: document.getElementsByClassName('input-box')[0],
 			};
 			if(!els.wrapper) return;
-			els.input = els.wrapper.getElementsByClassName('search-box__input')[0];
+			els.input = els.wrapper.getElementsByClassName('input-box__input')[0];
 
 			els.input.focus();
 			this._bindEvents();
@@ -30,6 +30,6 @@
 
 	};
 
-	searchBox.init();
+	inputBox.init();
 
 }());

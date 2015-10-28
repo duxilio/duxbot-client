@@ -1,0 +1,40 @@
+.message {
+	max-width: 50%;
+	clear: both;
+
+	//color: $base-color;
+	background-color: $bg-color-dark;
+	float: left;
+
+	box-shadow: 3px 3px 0 $bg-color-darker;
+
+	padding: $margin-m $margin-l;
+	border-radius: $border-radius;
+
+	position: relative;
+	margin-bottom: $margin-l;
+
+	&:before {
+		content: '';
+		width: 0;
+		height: 0; 
+		border-top: 10px solid transparent;
+		border-bottom: 10px solid transparent; 
+		border-right: 10px solid $bg-color-dark;
+
+		position: absolute;
+		top: 5px;
+		left: -10px;
+	}
+
+	&.message--right {
+		float: right;
+
+		&:before {
+			left: auto;
+			right: -10px;
+			border-right: none;
+			border-left: 10px solid $bg-color-dark;
+		}
+	}
+}
