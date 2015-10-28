@@ -13,6 +13,7 @@
 
 	position: relative;
 	margin-bottom: $margin-l;
+	margin-left: 10px;
 
 	&:before {
 		content: '';
@@ -29,6 +30,7 @@
 
 	&.message--right {
 		float: right;
+		margin-right: 10px;
 
 		&:before {
 			left: auto;

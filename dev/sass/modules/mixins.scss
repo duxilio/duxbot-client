@@ -9,7 +9,10 @@
 
 //Transition
 @mixin transition($property, $duration:$transition-duration, $timing:$transition-timing,  $delay:0s){
-    transition: $property $duration $timing $delay;
+    transition-property: $property;
+    transition-duration: $duration;
+    transition-timing-function: $timing;
+    transition-delay: $delay;
 }
 
 //Animations

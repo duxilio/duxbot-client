@@ -1,6 +1,6 @@
 <% layout('_inc/layout') -%>
 
-<section class="input-box">
+<header class="input-box">
 	<div class="container">
 
 		<div class="logo">
@@ -9,53 +9,38 @@
 		<input class="input-box__input" type="search" placeholder="How can I help?" />
 	
 	</div>
-</section>
+</header>
 
 <section class="output-box">
 	<div class="container">
-		
-		<div class="message">
-			Me and Matti have a meeting about software architecture with the guys from Microsoft tomorrow at 4
-		</div>
-		<div class="message message--right">
-			I am about to create the following meeting
-		</div>
-
-		<div class="card">
-			<table>
-				<tr>
-					<td>Name</td>
-					<td><b>Software Architecture</b></td>
-				</tr>
-				<tr>
-					<td>Date</td>
-					<td>29th of October 2015 (tomorrow)</td>
-				</tr>
-				<tr>
-					<td>Time</td>
-					<td>4pm - 5pm</td>
-				</tr>
-				<tr>
-					<td>Participants</td>
-					<td>
-						<div class="tag">Koen</div>
-						<div class="tag">Matti</div>
-						<div class="tag">Dave (Microsoft)</div>
-						<div class="tag">George (Microsoft)</div>
-					</td>
-				</tr>
-			</table>
-			<footer class="card__footer">
-				<p>Type either y or n</p>
-			</footer>
-		</div>
-
-		<div class="message">
-			Yeah sure
-		</div>
-		<div class="message message--right">
-			Meeting created
-		</div>
-
+		<div class="output-box__wrapper output-box__wrapper--visible"></div>
 	</div>
 </section>
+
+<script class="js-template" data-template-name="message" type="text/x-handlebars-template">
+	<div class="message {{#if right}}message--right{{/if}}">{{ content }}</div>
+</script>
+
+<script class="js-template" data-template-name="card" type="text/x-handlebars-template">
+	<div class="card">
+		<table>
+			{{#each details}}
+				<tr>
+					<td>{{ title }}</td>
+					<td>
+					{{#if tags}}
+						{{#each tags}}
+							<div class="tag">{{this}}</div>
+						{{/each}}
+					{{else}}
+					<b>{{ content }}</b>
+					{{/if}}
+					</td>
+				</tr>
+			{{/each}}
+		</table>
+		<footer class="card__footer">
+			<p>Type either y or n</p>
+		</footer>
+	</div>
+</script>

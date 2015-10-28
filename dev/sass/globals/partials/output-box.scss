@@ -7,5 +7,30 @@
 	// overflow-y: auto;
 
 	background-color: $bg-color;
-	padding-top: $margin-xl;
+	padding-top: 4em + $margin-xl;
+
+	&__wrapper {
+		opacity: 0;
+
+		@include transition(opacity);
+
+		&.output-box__wrapper--visible {
+			opacity: 1;
+		}
+	}
+
+	&__item {
+		overflow: hidden;
+		position: relative;
+
+		top: -20px;
+		opacity: 0;
+
+		@include transition((top, opacity));
+
+		&.output-box__item--visible {
+			top: 0;
+			opacity: 1;
+		}
+	}
 }

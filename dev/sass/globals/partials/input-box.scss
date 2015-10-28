@@ -1,12 +1,25 @@
 .input-box {
 	width: 100%;
 
-	padding: $margin-m 0;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1;
+	
+	background-color: $bg-color;
+	padding: $margin-l 0;
+	padding-bottom: 0;
 
 	.logo {
 		width: 40px;
 		float: left;
 		margin-right: $margin-m;
+		margin-bottom: 0;
+	}
+
+	&__input {
+		position: relative;
 	}
 
 	//width: 600px;
