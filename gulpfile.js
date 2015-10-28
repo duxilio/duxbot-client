@@ -1,6 +1,7 @@
+var exec = require('child_process').exec;
+
 var gulp = require('gulp'),
     livereload = require('gulp-livereload'),
-    run = require('gulp-run'),
     sass = require('gulp-sass'),
     ejsLocals = require('gulp-ejs-locals'),
     autoprefixer = require('gulp-autoprefixer'),
@@ -35,7 +36,13 @@ var pkg = require('./package.json'),
     };
 
 gulp.task('run', function(){
-    return run('./node_modules/.bin/electron .').exec();
+    exec('./node_modules/.bin/electron .', function(error, stdout, stderr){
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if(error !== null) {
+            console.log('exec error: ' + error);
+        }
+    });
 });
 
 gulp.task('watch', function(){

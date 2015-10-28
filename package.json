@@ -11,7 +11,6 @@
     "gulp-ejs-locals": "0.0.1",
     "gulp-livereload": "^3.8.1",
     "gulp-rename": "^1.2.2",
-    "gulp-run": "^1.6.11",
     "gulp-sass": "^2.0.4",
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.6",
