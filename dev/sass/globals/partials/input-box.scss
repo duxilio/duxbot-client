@@ -20,6 +20,32 @@
 
 	&__input {
 		position: relative;
+		float: left;
+		overflow: hidden;
+		font-size: $size-l !important;
+	}
+
+	&__input-wrapper {
+		position: relative;
+		overflow: hidden;
+
+		&__icon {
+			font-size: $size-l;
+			display: inline-block;
+			overflow: hidden;
+
+			margin-left: -40px;
+			line-height: 1.7em;
+
+			cursor: pointer;
+			position: relative;
+
+			color: rgba($white, .7);
+
+			&.input-box__input-wrapper__icon--active {
+				color: $white;
+			}
+		}
 	}
 
 	//width: 600px;

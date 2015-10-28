@@ -6,15 +6,16 @@ input[type="search"] {
 	border: none;
 	background-color: transparent;
 
-	font: $body-weight $size-l $body-family;
+	font: $body-weight $size-m $body-family;
 	color: $white;
 	@include border(bottom, $color: rgba($white, .4));
 
 	padding: 0;
 	padding-bottom: $margin-xs;
+	padding-right: $margin-xl;
 
 	&::-webkit-input-placeholder {
-		color: $white;
+		color: rgba($white, .7);
 	}
 
 	&:focus {

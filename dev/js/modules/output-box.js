@@ -5,7 +5,8 @@
 		_templates: {},
 
 		init: function(){
-			this._wrapper = document.getElementsByClassName('output-box__wrapper')[0];
+			var wrapper = this._wrapper = document.getElementsByClassName('output-box__wrapper')[0];
+			if(!wrapper) return;
 			this._getTemplates();
 		},
 
@@ -48,7 +49,5 @@
 		}
 
 	};
-
-	DX.outputBox.init();
 
 }(window.DX = window.DX || {}));

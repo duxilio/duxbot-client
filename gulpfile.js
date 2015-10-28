@@ -22,7 +22,7 @@ var pkg = require('./package.json'),
             destFolder: rootPaths.www+'/'
         },
         js: {
-            src: [rootPaths.dev+'/js/libs/**/*.js', rootPaths.dev+'/js/src/**/*.js'],
+            src: [rootPaths.dev+'/js/vendor/**/*.js', rootPaths.dev+'/js/modules/**/*.js', rootPaths.dev+'/js/*.js'],
             destFile: 'app.js',
             destFileMin: 'app.min.js',
             destFolder: rootPaths.www+'/js/'

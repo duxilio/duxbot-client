@@ -4611,30 +4611,93 @@ return /******/ (function(modules) { // webpackBootstrap
 	DX.inputBox = {
 
 		init: function(){
+			//check if the wrapper is present on the current page
 			var els = this._els = {
 				wrapper: document.getElementsByClassName('input-box')[0],
 			};
 			if(!els.wrapper) return;
-			els.input = els.wrapper.getElementsByClassName('input-box__input')[0];
 
-			els.input.focus();
+			//get additional elements
+			els.input = els.wrapper.getElementsByClassName('input-box__input')[0];
+			els.startBtn = els.wrapper.getElementsByClassName('input-box__input-wrapper__icon')[0];
+
+			//
 			this._bindEvents();
+			this._initSpeech();
 		},
 
 		_bindEvents: function(){
-			this._els.input.addEventListener('keyup', this._handleKeyup.bind(this), false)
+			//bind events
+			document.addEventListener('keyup', this._handleDocKeyup.bind(this), false);
 		},
 
-		_handleKeyup: function(e){
-			var els = this._els,
-				input = els.input,
-				val = input.value;
+		_initSpeech: function(){
+			var speech = this._speech = new DX.speechHelper();
+			this._listening = false;
 
-			if(!val) return;
+			var input = this._els.input,
+				startBtn = this._els.startBtn,
+				self = this;
 
-			if(e.keyCode === 13){ //enter
+			//save the original input placeholder
+			input.setAttribute('data-placeholder', input.placeholder);
+
+			//on result insert in input
+			speech.on('result', function(tempResult, finalResult){
+				if(self._blockSpeechResult){
+					self._blockSpeechResult = false;
+					return;
+				}
+				if(finalResult){
+					input.value = finalResult;
+					input.placeholder = input.getAttribute('data-placeholder');
+				} else {
+					input.value = '';
+					input.placeholder = tempResult;
+				}
+			});
+
+			//on startbutton click, toggle listening
+			startBtn.addEventListener('click', function(){
+				if(!self._listening){
+					self._els.startBtn.classList.add('input-box__input-wrapper__icon--active');
+					speech.start();
+					self._listening = true;
+				} else {
+					self._stopSpeechListening(true);
+				}
+			}, false);
+		},
+
+		_stopSpeechListening: function(insertLastResult){
+			//stop listening and make sure
+			//last result is not inserted
+			var els = this._els;
+
+			//if insert last result
+			//then insert the final result that
+			//comes through as soon as the api stops listening
+			this._blockSpeechResult = !!insertLastResult;
+
+			els.startBtn.classList.remove('input-box__input-wrapper__icon--active');
+			this._speech.stop();
+			els.input.placeholder = els.input.getAttribute('data-placeholder');
+			this._listening = false;
+		},
+
+		_handleDocKeyup: function(e){
+			var input = this._els.input,
+				val = input.value,
+				keyCode = e.keyCode;
+
+			this._stopSpeechListening();
+
+			//if enter is pressed
+			if(keyCode === 13){ //enter
+				if(!val) return;
 				input.value = '';
 
+				//DEBUG
 				if(val === 'clear'){
 					DX.outputBox.clear();
 					return;
@@ -4671,12 +4734,20 @@ return /******/ (function(modules) { // webpackBootstrap
 						}
 					});
 				}
+			} else {
+
+				//if there is a keyup event in doc
+				//and the search input is not focussed
+				//focus the input
+				if(document.activeElement !== input){
+					input.value = String.fromCharCode(keyCode);
+					input.focus();
+				}
+
 			}
 		}
 
 	};
-
-	DX.inputBox.init();
 
 }(window.DX = window.DX || {}));
 (function(){
@@ -4686,7 +4757,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		_templates: {},
 
 		init: function(){
-			this._wrapper = document.getElementsByClassName('output-box__wrapper')[0];
+			var wrapper = this._wrapper = document.getElementsByClassName('output-box__wrapper')[0];
+			if(!wrapper) return;
 			this._getTemplates();
 		},
 
@@ -4730,6 +4802,80 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	};
 
-	DX.outputBox.init();
+}(window.DX = window.DX || {}));
+(function(){
+	
+	DX.speechHelper = function(){
+		this._finalTranscript = '';
+		this._listeners = {};
+
+		var recognition = this._recognition = new webkitSpeechRecognition();
+		recognition.continuous = true;
+		recognition.interimResults = true;
+
+		// recognition.onstart = function() { ... }
+		// recognition.onresult = function(event) { ... }
+		// recognition.onerror = function(event) { ... }
+		// recognition.onend = function() { ... }
+		this._bindEvents();
+	};
+
+	DX.speechHelper.prototype = {
+
+		on: function(event, callback){
+			if(typeof callback !== 'function') return;
+
+			if(typeof this._listeners[event] !== 'object'){
+				this._listeners[event] = [];
+			}
+
+			this._listeners[event].push(callback);
+		},
+
+		start: function(){
+			var recognition = this._recognition;
+			this._finalTranscript = '';
+  			recognition.lang = 'en_GB';
+  			recognition.start();
+		},
+
+		stop: function(){
+  			this._recognition.stop();
+		},
+
+		_triggerEvent: function(event, data){
+			var listeners = this._listeners[event];
+
+			for(var i = 0, l = listeners.length; i < l; i++){
+				listeners[i].apply(this, data);
+			}
+		},
+
+		_bindEvents: function(){
+			this._recognition.onresult = this._handleResult.bind(this);
+		},
+
+		_handleResult: function(e){
+			var options = this._options,
+				interimTranscript = '';
+
+		    for(var i = e.resultIndex; i < e.results.length; i++) {
+		      	if(e.results[i].isFinal){
+		        	this._finalTranscript += e.results[i][0].transcript;
+		      	} else {
+		        	interimTranscript += e.results[i][0].transcript;
+		      	}
+		    }
+
+		    this._triggerEvent('result', [interimTranscript, this._finalTranscript]);
+		}
+
+	};
 
 }(window.DX = window.DX || {}));
+(function(){
+
+	DX.inputBox.init();
+	DX.outputBox.init();
+
+}());
