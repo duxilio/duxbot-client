@@ -87,7 +87,7 @@
 				val = input.value,
 				keyCode = e.keyCode;
 
-			if(keyCode === 18){
+			if(keyCode === 18){ //alt
 				this._toggleSpeechListening();
 				return;
 			}
