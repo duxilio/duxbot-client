@@ -11,6 +11,10 @@
 
 	margin-bottom: $margin-l;
 
+	&__content {
+		padding: $margin-m $margin-l;
+	}
+
 	&__footer {
 		overflow: hidden;
 		font-size: $size-xs;

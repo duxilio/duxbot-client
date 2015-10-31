@@ -25,12 +25,13 @@
 			}, 10);
 		},
 
-		clear: function(){
+		clear: function(callback){
 			var el = this._wrapper;
 			el.classList.remove('output-box__wrapper--visible');
 			setTimeout(function(){
 				el.innerHTML = '';
 				el.classList.add('output-box__wrapper--visible');
+				callback();
 			}, 300);
 		},
 

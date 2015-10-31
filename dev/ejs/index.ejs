@@ -26,24 +26,34 @@
 
 <script class="js-template" data-template-name="card" type="text/x-handlebars-template">
 	<div class="card">
+		{{#if details.isSingleOverview}}
+			<div class="card__content">
+				{{#each details.main}}
+					<p>{{this}}</p>
+				{{/each}}
+			</div>
+		{{else}}
 		<table>
 			{{#each details}}
-				<tr>
-					<td>{{ title }}</td>
-					<td>
-					{{#if tags}}
-						{{#each tags}}
-							<div class="tag">{{this}}</div>
-						{{/each}}
-					{{else}}
-					<b>{{ content }}</b>
-					{{/if}}
-					</td>
-				</tr>
+				{{#if this}}
+					<tr>
+						<td>{{ @key }}</td>
+						<td>
+						{{#if this.isTags }}
+							{{#each this.data}}
+								<span class="tag">{{this}}</span>
+							{{/each}}
+						{{else}}
+						<b>{{ this.data }}</b>
+						{{/if}}
+						</td>
+					</tr>
+				{{/if}}
 			{{/each}}
 		</table>
-		<footer class="card__footer">
-			<p>Type either y or n</p>
-		</footer>
+		{{/if}}
+		<!--<footer class="card__footer">
+			<p></p>
+		</footer>-->
 	</div>
 </script>

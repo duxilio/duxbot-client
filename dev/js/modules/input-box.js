@@ -83,9 +83,11 @@
 		},
 
 		_handleDocKeyup: function(e){
-			var input = this._els.input,
+			var self = this,
+				input = this._els.input,
 				val = input.value,
-				keyCode = e.keyCode;
+				keyCode = e.keyCode,
+				currRequestId = this._currRequestId; 
 
 			if(keyCode === 18){ //alt
 				this._toggleSpeechListening();
@@ -96,52 +98,89 @@
 
 			switch(keyCode){
 				case 13: //enter
-					if(!val) return;
+					if(!val || input.disabled) return;
 					input.value = '';
 
-					//DEBUG
-					if(val === 'clear'){
-						DX.outputBox.clear();
-						return;
-					} else if(val.indexOf('card') !== -1){
-						DX.outputBox.add({
-							template: 'card',
-							data: {
-								details: {
-									name: {
-										title: 'Name',
-										content: 'Software Architecture'
-									},
-									date: {
-										title: 'Date',
-										content: '29th of October 2015 (tomorrow)'
-									},
-									time: {
-										title: 'Time',
-										content: '4pm - 5pm'
-									},
-									participants: {
-										title: 'Participants',
-										tags: ['Koen', 'Matti', 'Dave (Microsoft)', 'George (Microsoft)']
-									}
-								}
-							}
-						});
-					} else {
+					var doAdd = function(){
+						input.disabled = true;
+
 						DX.outputBox.add({
 							template: 'message',
 							data: {
-								content: val,
-								right: val === 'hola'
+								right: false,
+								content: val
 							}
 						});
+
+						console.log('http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'));
+
+						B.ajax({
+							url: 'http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'),
+							type: 'post',
+							dataType: 'json',
+							data: {
+								query: val
+							},
+							success: function(res){
+								console.log(res);
+
+								if(res.type === 'question'){
+									self._currRequestId = res.requestId;
+								} else {
+									self._currRequestId = undefined;
+								}
+
+								DX.outputBox.add({
+									template: 'message',
+									data: {
+										right: true,
+										content: res.message
+									}
+								});
+
+								if(res.details){
+									var parserDetails = {},
+										resDetails = res.details,
+										keys = Object.keys(resDetails);
+
+									if(keys.length === 1){
+										//its a single overview
+										parserDetails.isSingleOverview = true;
+										parserDetails.main = resDetails[keys[0]];
+									} else {
+										parserDetails.isSingleOverview = false;
+										for(var key in resDetails){
+											parserDetails[key] = {
+												isTags: typeof resDetails[key] === 'object',
+												data: resDetails[key]
+											};
+										}
+									}
+
+									DX.outputBox.add({
+										template: 'card',
+										data: {
+											details: parserDetails
+										}
+									});
+								}
+
+								input.disabled = false;
+							}
+						});
+					};
+
+					if(!currRequestId){
+						DX.outputBox.clear(doAdd);
+					} else {
+						doAdd();
 					}
 					break;
 				default:
 					//if there is a keyup event in doc
 					//and the search input is not focussed
 					//focus the input
-					if(document.activeElement !== input){
+					if(document.activeElement !== input && !input.disabled){
 						input.value = String.fromCharCode(keyCode);
 						input.focus();
 					}
