@@ -4816,10 +4816,28 @@ var say = require('say');
 								resDetails = res.details,
 								keys = Object.keys(resDetails);
 
+							//parse img
+							for(key in resDetails){
+								var curr = resDetails[key];
+
+								if(typeof curr === 'object'){
+									curr.forEach(function(item, idx){
+										if(item.match(/\.gif/)){
+											curr[idx] = '<img src="'+item+'" />';
+										}
+									});
+								} else {
+									if(curr.match(/\.gif/)){
+										resDetails[key] = '<img src="'+curr+'" />';
+									}
+								}
+							}
+
 							if(keys.length === 1){
 								//its a single overview
 								parserDetails.isSingleOverview = true;
 								parserDetails.main = resDetails[keys[0]];
+								console.log(parserDetails);
 							} else {
 								parserDetails.isSingleOverview = false;
 								for(var key in resDetails){
