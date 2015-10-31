@@ -1,3 +1,5 @@
+var say = require('say');
+
 (function(){
 	
 	DX.inputBox = {
@@ -165,6 +167,7 @@
 								content: 'yes?'
 							}
 						});
+						say.speak('Victoria', 'yes?');
 						self._processingRequest = false;
 						return;
 					}
@@ -197,6 +200,7 @@
 								content: res.message
 							}
 						});
+						say.speak('Victoria', res.message);
 
 						if(res.details){
 							var parserDetails = {},

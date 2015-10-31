@@ -21,5 +21,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Koen Vendrik <koen@duxilio.com>",
-  "license": "BSD-2-Clause"
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "say": "^0.6.0"
+  }
 }
