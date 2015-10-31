@@ -33,24 +33,28 @@
 				{{/each}}
 			</div>
 		{{else}}
-		<table>
-			{{#each details}}
-				{{#if this}}
-					<tr>
-						<td>{{ @key }}</td>
-						<td>
-						{{#if this.isTags }}
-							{{#each this.data}}
-								<span class="tag">{{this}}</span>
-							{{/each}}
-						{{else}}
-						<b>{{ this.data }}</b>
-						{{/if}}
-						</td>
-					</tr>
-				{{/if}}
-			{{/each}}
-		</table>
+			<table>
+				{{#each details}}
+					{{#if this}}
+						<tr>
+							<td>{{ @key }}</td>
+							<td>
+							{{#if this.isTags }}
+								{{#each this.data}}
+									<span class="tag">{{this}}</span>
+								{{/each}}
+							{{else}}
+								{{#if this.data}}
+									<b>{{ this.data }}</b>
+								{{else}}
+									<b>{{ this }}</b>
+								{{/if}}
+							{{/if}}
+							</td>
+						</tr>
+					{{/if}}
+				{{/each}}
+			</table>
 		{{/if}}
 		<!--<footer class="card__footer">
 			<p></p>

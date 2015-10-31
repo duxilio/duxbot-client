@@ -4622,95 +4622,20 @@ var say = require('say');
 
 			//get additional elements
 			els.input = els.wrapper.getElementsByClassName('input-box__input')[0];
-			els.startBtn = els.wrapper.getElementsByClassName('input-box__input-wrapper__icon')[0];
 
 			//
 			this._bindEvents();
-			this._initSpeech();
 
 			//
-			this._startSpeechListening();
+			var startBtn = els.wrapper.getElementsByClassName('input-box__input-wrapper__icon')[0];
+
+			DX.inputSpeechHelper.initSpeech(startBtn, els.input, this._doRequest.bind(this));
+			DX.inputSpeechHelper.startSpeechListening();
 		},
 
 		_bindEvents: function(){
 			//bind events
 			document.addEventListener('keyup', this._handleDocKeyup.bind(this), false);
-		},
-
-		_initSpeech: function(){
-			var speech = this._speech = new DX.speechHelper();
-
-			var input = this._els.input,
-				startBtn = this._els.startBtn,
-				self = this;
-
-			//save the original input placeholder
-			input.setAttribute('data-placeholder', input.placeholder);
-
-			//on result insert in input
-			speech.on('result', function(tempResult, finalResult){
-				if(self._blockSpeechResult){
-					self._blockSpeechResult = false;
-					return;
-				}
-
-				if(finalResult){
-					input.value = finalResult;
-					input.placeholder = input.getAttribute('data-placeholder');
-				} else {
-					input.value = '';
-					input.placeholder = tempResult;
-				}
-
-				//when there is a final result
-				//do request automatically
-				if(finalResult){
-					speech.reset();
-					if(self._currRequestId){
-						//if there is a request id
-						//there is a q&a going on
-						//do not require name
-						self._doRequest(finalResult);
-					} else {
-						if(finalResult.trim().indexOf('Sarah') === 0){
-							self._doRequest(finalResult);
-						}
-					}
-				}
-			});
-
-			//on startbutton click, toggle listening
-			startBtn.addEventListener('click', this._toggleSpeechListening.bind(this), false);
-		},
-
-		_toggleSpeechListening: function(){
-			if(!this._listening){
-				this._startSpeechListening();
-			} else {
-				this._stopSpeechListening(false);
-			}
-		},
-
-		_startSpeechListening: function(){
-			this._els.startBtn.classList.add('input-box__input-wrapper__icon--active');
-			this._speech.start();
-			this._listening = true;
-		},
-
-		_stopSpeechListening: function(insertLastResult){
-			//stop listening and make sure
-			//last result is not inserted
-			var els = this._els;
-
-			//if insert last result
-			//then insert the final result that
-			//comes through as soon as the api stops listening
-			this._blockSpeechResult = !!insertLastResult;
-
-			els.startBtn.classList.remove('input-box__input-wrapper__icon--active');
-			this._speech.stop();
-			els.input.placeholder = els.input.getAttribute('data-placeholder');
-			this._listening = false;
 		},
 
 		_handleDocKeyup: function(e){
@@ -4720,11 +4645,11 @@ var say = require('say');
 				keyCode = e.keyCode;
 
 			if(keyCode === 18){ //alt
-				this._toggleSpeechListening();
+				DX.inputSpeechHelper.toggleSpeechListening();
 				return;
 			}
 
-			this._stopSpeechListening(true);
+			DX.inputSpeechHelper.stopSpeechListening(true);
 
 			switch(keyCode){
 				case 13: //enter
@@ -4765,9 +4690,8 @@ var say = require('say');
 					}
 				});
 
-				console.log('INDEXOF_SARAH', query.indexOf('Sarah'));
-				if(query.indexOf('Sarah') === 0){
-					query = query.replace('Sarah', '');
+				if(query.toLowerCase().indexOf('sarah') === 0){
+					query = query.replace('Sarah', '').replace('sarah', '');
 					if(query === ''){
 						DX.outputBox.add({
 							template: 'message',
@@ -4781,8 +4705,6 @@ var say = require('say');
 						return;
 					}
 				}
-
-				console.log('http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'));
 
 				B.ajax({
 					url: 'http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'),
@@ -4802,59 +4724,7 @@ var say = require('say');
 							self._currRequestId = undefined;
 						}
 
-						DX.outputBox.add({
-							template: 'message',
-							data: {
-								right: true,
-								content: res.message
-							}
-						});
-						say.speak('Victoria', res.message);
-
-						if(res.details){
-							var parserDetails = {},
-								resDetails = res.details,
-								keys = Object.keys(resDetails);
-
-							//parse img
-							for(key in resDetails){
-								var curr = resDetails[key];
-
-								if(typeof curr === 'object'){
-									curr.forEach(function(item, idx){
-										if(item.match(/\.gif/)){
-											curr[idx] = '<img src="'+item+'" />';
-										}
-									});
-								} else {
-									if(curr.match(/\.gif/)){
-										resDetails[key] = '<img src="'+curr+'" />';
-									}
-								}
-							}
-
-							if(keys.length === 1){
-								//its a single overview
-								parserDetails.isSingleOverview = true;
-								parserDetails.main = resDetails[keys[0]];
-								console.log(parserDetails);
-							} else {
-								parserDetails.isSingleOverview = false;
-								for(var key in resDetails){
-									parserDetails[key] = {
-										isTags: typeof resDetails[key] === 'object',
-										data: resDetails[key]
-									};
-								}
-							}
-
-							DX.outputBox.add({
-								template: 'card',
-								data: {
-									details: parserDetails
-								}
-							});
-						}
+						DX.inputResHelper.handleRes(res);
 
 						self._processingRequest = false;
 						input.disabled = false;
@@ -4867,6 +4737,168 @@ var say = require('say');
 			} else {
 				doAdd();
 			}
+		}
+
+	};
+
+}(window.DX = window.DX || {}));
+(function(){
+
+	DX.inputResHelper = {
+
+		handleRes: function(res){
+			DX.outputBox.add({
+				template: 'message',
+				data: {
+					right: true,
+					content: res.message
+				}
+			});
+			say.speak('Victoria', res.message);
+
+			if(res.details){
+				var parserDetails = {},
+					resDetails = res.details,
+					keys = Object.keys(resDetails);
+
+				//parse img
+				for(key in resDetails){
+					var curr = resDetails[key];
+
+					if(typeof curr === 'object'){
+						curr.forEach(function(item, idx){
+							if(typeof item === 'string' && item.match(/\.gif/)){
+								curr[idx] = '<img src="'+item+'" />';
+							}
+						});
+					} else {
+						if(curr.match(/\.gif/)){
+							resDetails[key] = '<img src="'+curr+'" />';
+						}
+					}
+				}
+
+				if(keys.length === 1){
+					//its a single overview
+					parserDetails.isSingleOverview = true;
+					parserDetails.main = resDetails[keys[0]];
+				} else {
+					parserDetails.isSingleOverview = false;
+					for(var key in resDetails){
+						parserDetails[key] = {
+							isTags: typeof resDetails[key] === 'object',
+							data: resDetails[key]
+						};
+					}
+				}
+
+				//check if the single overview is an object array
+				//in which case we need to handle it as multiple cards
+				if(parserDetails.isSingleOverview &&
+					typeof parserDetails.main[0] === 'object'){
+
+					parserDetails.main.forEach(function(details){
+						DX.outputBox.add({
+							template: 'card',
+							data: {
+								details: details
+							}
+						});
+					});
+				} else {
+					DX.outputBox.add({
+						template: 'card',
+						data: {
+							details: parserDetails
+						}
+					});
+				}
+			}
+		}
+
+	};
+
+}(window.DX = window.DX || {}));
+(function(){
+
+	DX.inputSpeechHelper = {
+
+		initSpeech: function(startBtn, input, onFinalResult){
+			this._speechEls = {
+				startBtn: startBtn,
+				input: input
+			};
+
+			var speech = this._speech = new DX.speechHelper(),
+				self = this;
+
+			//save the original input placeholder
+			input.setAttribute('data-placeholder', input.placeholder);
+
+			//on result insert in input
+			speech.on('result', function(tempResult, finalResult){
+				if(self._blockSpeechResult){
+					self._blockSpeechResult = false;
+					return;
+				}
+
+				if(finalResult){
+					input.value = finalResult;
+					input.placeholder = input.getAttribute('data-placeholder');
+				} else {
+					input.value = '';
+					input.placeholder = tempResult;
+				}
+
+				//when there is a final result
+				//do request automatically
+				if(finalResult){
+					speech.reset();
+					if(self._currRequestId){
+						//if there is a request id
+						//there is a q&a going on
+						//do not require name
+						onFinalResult(finalResult);
+					} else {
+						if(finalResult.trim().indexOf('Sarah') === 0){
+							onFinalResult(finalResult);
+						}
+					}
+				}
+			});
+
+			//on startbutton click, toggle listening
+			startBtn.addEventListener('click', this.toggleSpeechListening.bind(this), false);
+		},
+
+		toggleSpeechListening: function(){
+			if(!this._listening){
+				this.startSpeechListening();
+			} else {
+				this.stopSpeechListening(false);
+			}
+		},
+
+		startSpeechListening: function(){
+			this._speechEls.startBtn.classList.add('input-box__input-wrapper__icon--active');
+			this._speech.start();
+			this._listening = true;
+		},
+
+		stopSpeechListening: function(insertLastResult){
+			//stop listening and make sure
+			//last result is not inserted
+			var els = this._speechEls;
+
+			//if insert last result
+			//then insert the final result that
+			//comes through as soon as the api stops listening
+			this._blockSpeechResult = !!insertLastResult;
+
+			els.startBtn.classList.remove('input-box__input-wrapper__icon--active');
+			this._speech.stop();
+			els.input.placeholder = els.input.getAttribute('data-placeholder');
+			this._listening = false;
 		}
 
 	};

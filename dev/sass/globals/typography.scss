@@ -4,10 +4,12 @@ img {
 }
 
 p {
-	margin-bottom: $margin-s;
+	//margin-bottom: $margin-s;
 }
 
 table {
+	width: 100%;
+
 	font-size: $size-s;
 	border-collapse: collapse;
 
