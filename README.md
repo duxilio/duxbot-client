@@ -1,7 +1,7 @@
 #### Introduction
 We hired a new office assistant lately. I asked her to put a meeting in my calendar and invite the client to the event as well. She made a typo and as a result the client showed up too late, which is okay because she's human and humans make mistakes now and then...
 
-But wait.. What if you could have about the same experience as with a physical someone but let a computer do all the work instead. If that would work well it could be a lot more accurate and well, a computer doesn't ask for a paystroke every month.
+But wait.. What if you could have about the same experience as with a physical someone but let a computer do all the work instead. If that would work well it could be a lot more accurate and well, a computer doesn't ask for a payslip every month.
 
 `Hey Sarah`<br>
 `Yes?`
