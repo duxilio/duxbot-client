@@ -26,7 +26,7 @@ Awesome, but how is this different from for example Siri? Well for starters its 
 `Sarah, whats our current balance`<br>
 `2 million euro's and 5 cents`
 
-Sarah, your new expendable office assistant.
+Sarah, your new extendable office assistant.
 
 #### Setup
 ```
