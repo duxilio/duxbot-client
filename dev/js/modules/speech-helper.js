@@ -34,6 +34,10 @@
   			recognition.start();
 		},
 
+		reset: function(){
+			this._finalTranscript = '';
+		},
+
 		stop: function(){
   			this._recognition.stop();
 		},

@@ -4625,6 +4625,9 @@ return /******/ (function(modules) { // webpackBootstrap
 			//
 			this._bindEvents();
 			this._initSpeech();
+
+			//
+			this._startSpeechListening();
 		},
 
 		_bindEvents: function(){
@@ -4648,12 +4651,29 @@ return /******/ (function(modules) { // webpackBootstrap
 					self._blockSpeechResult = false;
 					return;
 				}
+
 				if(finalResult){
 					input.value = finalResult;
 					input.placeholder = input.getAttribute('data-placeholder');
 				} else {
 					input.value = '';
 					input.placeholder = tempResult;
+				}
+
+				//when there is a final result
+				//do request automatically
+				if(finalResult){
+					speech.reset();
+					if(self._currRequestId){
+						//if there is a request id
+						//there is a q&a going on
+						//do not require name
+						self._doRequest(finalResult);
+					} else {
+						if(finalResult.trim().indexOf('Sarah') === 0){
+							self._doRequest(finalResult);
+						}
+					}
 				}
 			});
 
@@ -4695,8 +4715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			var self = this,
 				input = this._els.input,
 				val = input.value,
-				keyCode = e.keyCode,
-				currRequestId = this._currRequestId; 
+				keyCode = e.keyCode;
 
 			if(keyCode === 18){ //alt
 				this._toggleSpeechListening();
@@ -4709,81 +4728,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				case 13: //enter
 					if(!val || input.disabled) return;
 					input.value = '';
-
-					var doAdd = function(){
-						input.disabled = true;
-
-						DX.outputBox.add({
-							template: 'message',
-							data: {
-								right: false,
-								content: val
-							}
-						});
-
-						console.log('http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'));
-
-						B.ajax({
-							url: 'http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'),
-							type: 'post',
-							dataType: 'json',
-							data: {
-								query: val
-							},
-							success: function(res){
-								console.log(res);
-
-								if(res.type === 'question'){
-									self._currRequestId = res.requestId;
-								} else {
-									self._currRequestId = undefined;
-								}
-
-								DX.outputBox.add({
-									template: 'message',
-									data: {
-										right: true,
-										content: res.message
-									}
-								});
-
-								if(res.details){
-									var parserDetails = {},
-										resDetails = res.details,
-										keys = Object.keys(resDetails);
-
-									if(keys.length === 1){
-										//its a single overview
-										parserDetails.isSingleOverview = true;
-										parserDetails.main = resDetails[keys[0]];
-									} else {
-										parserDetails.isSingleOverview = false;
-										for(var key in resDetails){
-											parserDetails[key] = {
-												isTags: typeof resDetails[key] === 'object',
-												data: resDetails[key]
-											};
-										}
-									}
-
-									DX.outputBox.add({
-										template: 'card',
-										data: {
-											details: parserDetails
-										}
-									});
-								}
-
-								input.disabled = false;
-							}
-						});
-					};
-
-					if(!currRequestId){
-						DX.outputBox.clear(doAdd);
-					} else {
-						doAdd();
-					}
+					this._doRequest(val);
 					break;
 				default:
 					//if there is a keyup event in doc
@@ -4794,6 +4739,111 @@ return /******/ (function(modules) { // webpackBootstrap
 						input.focus();
 					}
 					break;
+			}
+		},
+
+		_doRequest: function(query){
+			if(this._processingRequest) return;
+
+			var self = this,
+				input = this._els.input,
+				currRequestId = this._currRequestId;
+
+			query = query.trim();
+
+			var doAdd = function(){
+				input.disabled = true;
+				self._processingRequest = true;			
+
+				DX.outputBox.add({
+					template: 'message',
+					data: {
+						right: false,
+						content: query
+					}
+				});
+
+				console.log('INDEXOF_SARAH', query.indexOf('Sarah'));
+				if(query.indexOf('Sarah') === 0){
+					query = query.replace('Sarah', '');
+					if(query === ''){
+						DX.outputBox.add({
+							template: 'message',
+							data: {
+								right: true,
+								content: 'yes?'
+							}
+						});
+						self._processingRequest = false;
+						return;
+					}
+				}
+
+				console.log('http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'));
+
+				B.ajax({
+					url: 'http://localhost:3000/'+(currRequestId ? 'analyse/'+currRequestId : 'analyse'),
+					type: 'post',
+					dataType: 'json',
+					data: {
+						query: query
+					},
+					success: function(res){
+						if(res.success === false){
+							self._currRequestId = undefined;
+						}
+
+						if(res.type === 'question'){
+							self._currRequestId = res.requestId;
+						} else {
+							self._currRequestId = undefined;
+						}
+
+						DX.outputBox.add({
+							template: 'message',
+							data: {
+								right: true,
+								content: res.message
+							}
+						});
+
+						if(res.details){
+							var parserDetails = {},
+								resDetails = res.details,
+								keys = Object.keys(resDetails);
+
+							if(keys.length === 1){
+								//its a single overview
+								parserDetails.isSingleOverview = true;
+								parserDetails.main = resDetails[keys[0]];
+							} else {
+								parserDetails.isSingleOverview = false;
+								for(var key in resDetails){
+									parserDetails[key] = {
+										isTags: typeof resDetails[key] === 'object',
+										data: resDetails[key]
+									};
+								}
+							}
+
+							DX.outputBox.add({
+								template: 'card',
+								data: {
+									details: parserDetails
+								}
+							});
+						}
+
+						self._processingRequest = false;
+						input.disabled = false;
+					}
+				});
+			};
+
+			if(!currRequestId){
+				DX.outputBox.clear(doAdd);
+			} else {
+				doAdd();
 			}
 		}
 
@@ -4888,6 +4938,10 @@ return /******/ (function(modules) { // webpackBootstrap
 			this._finalTranscript = '';
   			recognition.lang = 'en_GB';
   			recognition.start();
+		},
+
+		reset: function(){
+			this._finalTranscript = '';
 		},
 
 		stop: function(){
