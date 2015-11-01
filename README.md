@@ -33,6 +33,8 @@ We wanted to make Duxbot easy to setup which is why you can use it on your lapto
 
 Imagine standing in the conference room and saying `Sarah, start a new conference call and dim the lights` after which `Google Hangouts` pops up on the screen and the lights dim.
 
+You could even let Sarah greet your clients. *doorbell rings, duxbot shows front-door camera* `Sarah, Robert is here.` after which Duxbot would open the front door and say `Hey Robert, good to see you again.`.
+
 #### Business Plan
 In the future you can use Duxbot for a very small monthly payment of `$10`. This is what you pay to be able to use the core. The extentions however are open source which means anyone can build on the Duxbot platform. The official extention repository would be actively maintained so anyone can file a pull request and contribute which means anyone can help make Duxbot better.
 
