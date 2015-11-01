@@ -28,6 +28,11 @@ Awesome, but how is this different from for example Siri? Well for starters its 
 
 Sarah, your new extendable office assistant.
 
+#### Extra Info
+We wanted to make Duxbot easy to setup which is why you can use it on your laptop. To get the most out of Duxbot however you would have to hang strong proximity microphones in your office so Sarah can listen to you where-ever you are.
+
+Imagine standing in the conference room and saying `Sarah, start a new conference call and dim the lights` after which `Google Hangouts` pops up on the screen and the lights dim.
+
 #### Business Plan
 In the future you can use Duxbot for a very small monthly payment of `$10`. This is what you pay to be able to use the core. The extentions however are open source which means anyone can build on the Duxbot platform. The official extention repository would be actively maintained so anyone can file a pull request and contribute which means anyone can help make Duxbot better.
 
