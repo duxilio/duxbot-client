@@ -21,6 +21,10 @@
 				for(key in resDetails){
 					var curr = resDetails[key];
 
+					if(!isNaN(curr)){
+						curr = curr.toString();
+					}
+
 					if(typeof curr === 'object'){
 						curr.forEach(function(item, idx){
 							if(typeof item === 'string' && item.match(/\.gif/)){
