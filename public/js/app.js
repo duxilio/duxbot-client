@@ -4858,10 +4858,11 @@ var say = require('say');
 				//do request automatically
 				if(finalResult){
 					speech.reset();
-					if(self._currRequestId){
+					if(DX.inputBox._currRequestId){
 						//if there is a request id
 						//there is a q&a going on
 						//do not require name
+						console.log('GOOOO');
 						onFinalResult(finalResult);
 					} else {
 						if(finalResult.trim().indexOf('Sarah') === 0){
