@@ -4862,7 +4862,6 @@ var say = require('say');
 						//if there is a request id
 						//there is a q&a going on
 						//do not require name
-						console.log('GOOOO');
 						onFinalResult(finalResult);
 					} else {
 						if(finalResult.trim().indexOf('Sarah') === 0){
