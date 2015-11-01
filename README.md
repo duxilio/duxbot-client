@@ -21,12 +21,15 @@ But wait.. What if you could have about the same experience as with a physical s
 `Me, dave and joseph from Microsoft`<br>
 `I created the following event for you`
 
-Awesome, but how is this different from for example Siri? Well for starters its not a PA, its and office assistant. And its expandable with anything you want, so it can do more than Siri will ever be able to, like checking your bank balance.
+Awesome, but how is this different from for example Siri? Well for starters its not a PA, it an office assistant. And its extendable with anything you want, so it can do more than Siri will ever be able to, like checking your bank balance, preparing transfers, controlling your office's lights and temprature and so much more.
 
 `Sarah, whats our current balance`<br>
 `2 million euro's and 5 cents`
 
 Sarah, your new extendable office assistant.
+
+#### Business Plan
+In the future you can use Duxbot for a very small monthly payment of `$10`. This is what you pay to be able to use the core. The extentions however are open source which means anyone can build on the Duxbot platform. The official extention repository would be actively maintained so anyone can file a pull request and contribute which means anyone can help make Duxbot better.
 
 #### Setup
 ```
